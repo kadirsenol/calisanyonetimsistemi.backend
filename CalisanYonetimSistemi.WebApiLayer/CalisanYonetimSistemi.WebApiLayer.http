@@ -1,0 +1,6 @@
+@CalisanYonetimSistemi.WebApiLayer_HostAddress = http://localhost:5237
+
+GET {{CalisanYonetimSistemi.WebApiLayer_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
