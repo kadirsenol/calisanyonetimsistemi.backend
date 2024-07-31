@@ -10,10 +10,11 @@ namespace CalisanYonetimSistemi.WebApiLayer.Controllers.Yonetici
     [Authorize(Roles = "yonetici")]
     [Route("api/yonetici/[controller]")]
     [ApiController]
-    public class PerformansController(IPerformansDegerlendirmeManager performansDegerlendirmeManager, IRaporManager raporManager, IMapper mapper) : ControllerBase
+    public class PerformansController(IPerformansDegerlendirmeManager performansDegerlendirmeManager, IRaporManager raporManager, IUserManager userManager, IMapper mapper) : ControllerBase
     {
         private readonly IPerformansDegerlendirmeManager performansDegerlendirmeManager = performansDegerlendirmeManager;
         private readonly IRaporManager raporManager = raporManager;
+        private readonly IUserManager userManager = userManager;
         private readonly IMapper mapper = mapper;
 
         [HttpPost("[action]")]
@@ -32,7 +33,23 @@ namespace CalisanYonetimSistemi.WebApiLayer.Controllers.Yonetici
 
                 if (await performansDegerlendirmeManager.Insert(performansDegerlendirme) > 0)
                 {
-                    return Ok("Performans değerlendirme kaydı başarıyla gerçekleşti.");
+                    User user = await userManager.GetByPK(performansDegerlendirme.UserId);
+
+                    var toplamPuan = performansDegerlendirme.PerformansTipi switch
+                    {
+                        PerformanTipi.Analitiklik => user.ToplamAnalitiklikPuan = user.ToplamAnalitiklikPuan + performansDegerlendirme.PerformansPuani,
+                        PerformanTipi.TakimCalismasi => user.ToplamTakimCalismasiPuan = user.ToplamTakimCalismasiPuan + performansDegerlendirme.PerformansPuani,
+                        PerformanTipi.Uretkenlik => user.ToplamUretkenlikPuan = user.ToplamUretkenlikPuan + performansDegerlendirme.PerformansPuani,
+                        _ => 0 // swith in diger durumlari icin
+                    };
+
+                    int sonuc = await userManager.update(user);
+
+                    if (sonuc > 0)
+                    {
+                        return Ok("Performans değerlendirme kaydı başarıyla gerçekleşti.");
+                    }
+
                 }
                 return Problem("Değerlendirme sırasında bir hata oluştu.");
 

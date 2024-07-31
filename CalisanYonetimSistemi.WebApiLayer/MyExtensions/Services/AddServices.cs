@@ -33,7 +33,7 @@ namespace CalisanYonetimSistemi.WebApiLayer.MyExtensions.Services
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = "http://localhost:5237",
                         ValidAudience = "http://localhost:5237",
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("qwertyuioplkjhgfdsazxcvbnmqwertlkjfdslkjflksjfklsjfklsjdflskjflyuioplkjhgfdsazxcvbnmmnbv")), /// Burayı secret dosyasına gönder
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Token:Key"])), /// Burayı secret dosyasına gönder
                         ClockSkew = TimeSpan.Zero
                     });
             return services;

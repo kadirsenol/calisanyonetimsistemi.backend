@@ -24,7 +24,7 @@ namespace CalisanYonetimSistemi.WebApiLayer.MyExtensions.Tokens
                 };
             user.ExprationToken = DateTime.Now.AddDays(7);
 
-            SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("qwertyuioplkjhgfdsazxcvbnmqwertlkjfdslkjflksjfklsjfklsjdflskjflyuioplkjhgfdsazxcvbnmmnbv"));   /// Burayı secret dosyasına gönder
+            SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Token:Key"]));   /// Burayı secret dosyasına gönder
             SigningCredentials signingcredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             JwtSecurityToken securityToken = new JwtSecurityToken(
                 issuer: "http://localhost:5237",
